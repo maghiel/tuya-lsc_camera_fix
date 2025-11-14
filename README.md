@@ -1,3 +1,23 @@
+# Who is this for? 
+As came to my attention lately, it's unclear to some users whether to use this custom integration. 
+Some users might be even still using this integration while they shouldn't be. I can't blame them ;)  
+
+So, here's a little clarification:
+
+_tuya-lsc_camera_fix_ was ment and used as a temporary fix for some Tuya devices (specifically low-power devices) until
+fixes were merged upstream. They have been for quite a while now.  
+The sole reason for not archiving this repository is giving users that aren't fast with upgrading their Home Assistant 
+or are stuck with an old version the possibility to still use their, otherwise unsupported, devices.
+
+__IN OTHER WORDS:__  
+
+__Running Home Assistant Core 2025.3 or higher:__  
+There's absolutely no reason for you to install this integration. If you have it installed, remove it and move to the 
+official Tuya integration.
+
+__Running Home Assistant Core > 2024.11 < 2025.3__:  
+This integration might fix your issues. Nevertheless, please consider upgrading!
+
 # UPDATE 20250214:
 Scratch the update below. This component now also fixes #136472 by adding support for some Temperature and 
 Humidity Sensors (with External Probe).   
