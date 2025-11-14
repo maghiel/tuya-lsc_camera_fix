@@ -57,7 +57,7 @@ Make sure you have HACS installed.
 * Navigate to HACS
 * Click the 3-dot menu in the top-right corner, choose **Custom Repositories**. In the form fill out the following:
   * **Repository:** this repo; _maghiel/tuya-lsc_camera_fix/_
-  * **Type:** _Integration
+  * **Type:** Integration
   * Click **Add**
 
 The repo will now be downloaded. Restart Home Assistant after a successful download. 
