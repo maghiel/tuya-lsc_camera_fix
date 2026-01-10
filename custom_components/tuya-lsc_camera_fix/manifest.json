@@ -1,7 +1,8 @@
 {
-  "domain": "tuya",
-  "name": "Tuya",
-  "codeowners": ["@Tuya", "@zlinoliver"],
+  "domain": "tuya-lsc_camera_fix",
+  "name": "Tuya LSC Camera Fix",
+  "version": "1.0.3",
+  "codeowners": ["@maghiel"],
   "config_flow": true,
   "dependencies": ["ffmpeg"],
   "dhcp": [
@@ -42,6 +43,6 @@
   "documentation": "https://www.home-assistant.io/integrations/tuya",
   "integration_type": "hub",
   "iot_class": "cloud_push",
-  "loggers": ["tuya_sharing"],
-  "requirements": ["tuya-device-sharing-sdk==0.2.8"]
+  "loggers": ["tuya_iot"],
+  "requirements": ["tuya-device-sharing-sdk==0.2.1"]
 }

@@ -11,31 +11,15 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import TuyaConfigEntry
-from .const import TUYA_DISCOVERY_NEW, DeviceCategory, DPCode
+from .const import TUYA_DISCOVERY_NEW, DPCode
 from .entity import TuyaEntity
-from .models import DeviceWrapper, DPCodeBooleanWrapper
 
-BUTTONS: dict[DeviceCategory, tuple[ButtonEntityDescription, ...]] = {
-    DeviceCategory.HXD: (
-        ButtonEntityDescription(
-            key=DPCode.SWITCH_USB6,
-            translation_key="snooze",
-        ),
-    ),
-    DeviceCategory.MSP: (
-        ButtonEntityDescription(
-            key=DPCode.FACTORY_RESET,
-            translation_key="factory_reset",
-            entity_category=EntityCategory.DIAGNOSTIC,
-            entity_registry_enabled_default=False,
-        ),
-        ButtonEntityDescription(
-            key=DPCode.MANUAL_CLEAN,
-            translation_key="manual_clean",
-            entity_category=EntityCategory.CONFIG,
-        ),
-    ),
-    DeviceCategory.SD: (
+# All descriptions can be found here.
+# https://developer.tuya.com/en/docs/iot/standarddescription?id=K9i5ql6waswzq
+BUTTONS: dict[str, tuple[ButtonEntityDescription, ...]] = {
+    # Robot Vacuum
+    # https://developer.tuya.com/en/docs/iot/fsd?id=K9gf487ck1tlo
+    "sd": (
         ButtonEntityDescription(
             key=DPCode.RESET_DUSTER_CLOTH,
             translation_key="reset_duster_cloth",
@@ -62,6 +46,14 @@ BUTTONS: dict[DeviceCategory, tuple[ButtonEntityDescription, ...]] = {
             entity_category=EntityCategory.CONFIG,
         ),
     ),
+    # Wake Up Light II
+    # Not documented
+    "hxd": (
+        ButtonEntityDescription(
+            key=DPCode.SWITCH_USB6,
+            translation_key="snooze",
+        ),
+    ),
 }
 
 
@@ -71,28 +63,24 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up Tuya buttons dynamically through Tuya discovery."""
-    manager = entry.runtime_data.manager
+    hass_data = entry.runtime_data
 
     @callback
     def async_discover_device(device_ids: list[str]) -> None:
         """Discover and add a discovered Tuya buttons."""
         entities: list[TuyaButtonEntity] = []
         for device_id in device_ids:
-            device = manager.device_map[device_id]
+            device = hass_data.manager.device_map[device_id]
             if descriptions := BUTTONS.get(device.category):
                 entities.extend(
-                    TuyaButtonEntity(device, manager, description, dpcode_wrapper)
+                    TuyaButtonEntity(device, hass_data.manager, description)
                     for description in descriptions
-                    if (
-                        dpcode_wrapper := DPCodeBooleanWrapper.find_dpcode(
-                            device, description.key, prefer_function=True
-                        )
-                    )
+                    if description.key in device.status
                 )
 
         async_add_entities(entities)
 
-    async_discover_device([*manager.device_map])
+    async_discover_device([*hass_data.manager.device_map])
 
     entry.async_on_unload(
         async_dispatcher_connect(hass, TUYA_DISCOVERY_NEW, async_discover_device)
@@ -107,14 +95,12 @@ class TuyaButtonEntity(TuyaEntity, ButtonEntity):
         device: CustomerDevice,
         device_manager: Manager,
         description: ButtonEntityDescription,
-        dpcode_wrapper: DeviceWrapper[bool],
     ) -> None:
         """Init Tuya button."""
         super().__init__(device, device_manager)
         self.entity_description = description
         self._attr_unique_id = f"{super().unique_id}{description.key}"
-        self._dpcode_wrapper = dpcode_wrapper
 
-    async def async_press(self) -> None:
+    def press(self) -> None:
         """Press the button."""
-        await self._async_send_wrapper_updates(self._dpcode_wrapper, True)
+        self._send_command([{"code": self.entity_description.key, "value": True}])
