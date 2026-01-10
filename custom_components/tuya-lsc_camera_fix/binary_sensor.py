@@ -370,6 +370,9 @@ BINARY_SENSORS: dict[DeviceCategory, tuple[TuyaBinarySensorEntityDescription, ..
     ),
 }
 
+# Wi-Fi Smart Contact sensor (duplicate of `mcs`)
+BINARY_SENSORS[DeviceCategory.QT] = BINARY_SENSORS[DeviceCategory.MCS]
+
 
 class _CustomDPCodeWrapper(DPCodeWrapper):
     """Custom DPCode Wrapper to check for values in a set."""

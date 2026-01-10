@@ -536,6 +536,11 @@ class DeviceCategory(StrEnum):
 
     Found in some diffusers, plugs and PIR flood lights
     """
+    QT = "qt"
+    """Wi-Fi Smart Contact sensor (undocumented)
+    
+    Most probably a duplicate of (or category changed to) MCS
+    """
     QXJ = "qxj"
     """Temperature and Humidity Sensor with External Probe (undocumented)
 

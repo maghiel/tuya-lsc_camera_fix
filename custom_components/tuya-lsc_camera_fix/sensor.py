@@ -1724,6 +1724,9 @@ SENSORS[DeviceCategory.DGHSXJ] = SENSORS[DeviceCategory.SP]
 # Power Socket (duplicate of `kg`)
 SENSORS[DeviceCategory.PC] = SENSORS[DeviceCategory.KG]
 
+# Wi-Fi Smart Contact sensor (duplicate of `mcs`)
+SENSORS[DeviceCategory.QT] = SENSORS[DeviceCategory.MCS]
+
 
 def _get_dpcode_wrapper(
     device: CustomerDevice,
